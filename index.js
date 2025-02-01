@@ -11,9 +11,25 @@ const client = new Discord.Client({
     ]
 })
 
-client.on("ready", () => {
-    console.log(`Logged in as ${client.user.tag}`)
-})
+let bot = {
+    client, 
+    prefix: "n.", 
+    owners: ["762478478233829377"]
+}
+
+client.commands = new Discord.Collection()
+client.events = new Discord.Collection()
+
+client.loadEvents = (bot, reload) => require("./handlers/events")(bot, reload)
+client.loadCommands = (bot,reload) => require("./handlers/commands")(bot, reload)
+
+client.loadEvents(bot, false)
+client.loadCommands(bot, false)
+
+module.exports = bot
+// client.on("ready", () => {
+//     console.log(`Logged in as ${client.user.tag}`)
+// })
 
 client.on("messageCreate", (message) => {
     if (message.content == "hi"){
@@ -29,6 +45,25 @@ client.on("guildMemberAdd", async (member) => {
         content: `<@${member.id}> Oil Up Fuck Nigga`,
         files: [img]
     })
+})
+
+client.slashcommands = new Discord.Collection()
+
+client.loadSlashCommands = (bot, reload) => require("./handlers/slashcommands")(bot, reload)
+client.loadSlashCommands(bot, false)
+
+client.on("interactionCreate", (interaction) => {
+    if (!interaction.isCommand()) return
+    if (!interaction.inGuild()) return interaction.reply("This command can only be used amongst real niggas")
+
+    const slashcmd = client.slashcommands.get(interaction.commandName)
+    
+    if (!slashcmd) return interaction.reply("Invalid slash command Chief")
+
+    if(slashcmd.perms && !interaction.member.permissions.has(slashcmd.perm))  
+        return interaction.reply("You ain't got enough motion to use this command lil nigga")
+    
+    slashcmd.run(client, interaction)
 })
 
 client.login(process.env.TOKEN)
