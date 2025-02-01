@@ -23,7 +23,7 @@ module.exports = {
         let member = message.member
 
         if(command.devOnly && !owners.includes(member.id)){
-            return message.reply("Don't tell me what to do bitch. This command is only available to real niggas!")
+            return message.reply("Don't tell me what to do pussy. This command is only available to real niggas!")
         }
 
         if (command.permissions && member.permissions.missing(command.permissions).length !== 0){

@@ -2,7 +2,7 @@ module.exports = {
     name: "ping", 
     category: "info",
     permissions: [], 
-    devOnly: false, 
+    devOnly: true, 
     run: async ({client, message, args}) => {
         message.reply("Pong")
     }
